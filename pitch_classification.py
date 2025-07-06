@@ -24,11 +24,11 @@ AUDIO_DIRS = [
     r"C:\Users\user\PycharmProjects\TOY\five_2"
 ]
 BEST_MODEL_PATH = r"C:\Users\user\PycharmProjects\Toy2\CNN_model_result\best_model.h5"
-SCALER_PATH = r"/files_for_train/scaler.pkl"
-ENCODER_PATH = r"/files_for_train/label_encoder.pkl"
+SCALER_PATH = r"C:\Users\user\PycharmProjects\Toy2\files_for_train\scaler.pkl"
+ENCODER_PATH = r"C:\Users\user\PycharmProjects\Toy2\files_for_train\label_encoder.pkl"
 
 SR = 16000 # 샘플링 레이트
-DURATION = 1.0 # 1초 단위 청크
+DURATION = 0.25 # 1초 단위 청크
 HYBRID_FEATURE_DIM = 175 # 추출될 feature 벡터의 길이
 
 PITCH_THRESHOLDS = {
@@ -144,7 +144,7 @@ for i, row in tqdm(df.iterrows(), total=len(df)):
         # 1초 단위 pitch 분류
         y, _ = librosa.load(file_path, sr=SR)
         y, _ = librosa.effects.trim(y)
-        chunks = split_audio_to_chunks(y, sr=SR, chunk_duration=1.0)
+        chunks = split_audio_to_chunks(y, sr=SR, chunk_duration=0.25)
 
         for idx, chunk in enumerate(chunks):
             pitch = extract_pitch(chunk, sr=SR)
@@ -156,7 +156,7 @@ for i, row in tqdm(df.iterrows(), total=len(df)):
 
 # === 결과 저장 ===
 final_df = pd.DataFrame(results, columns=["wav_id", "source", "chunk_index", "예측 성별", "평균 피치 (Hz)", "피치 카테고리"])
-csv_path = os.path.join(RESULT_DIR, "final_gender_pitch_result_chunks.csv")
+csv_path = os.path.join(RESULT_DIR, "final_gender_pitch_result_chunks_0,25.csv")
 final_df.to_csv(csv_path, index=False, encoding="utf-8-sig")
 print(f"✅ 최종 CSV 저장 완료: {csv_path}")
 
@@ -174,7 +174,7 @@ plt.title("성별 vs 피치 카테고리 분포 히트맵")
 plt.xlabel("피치 카테고리")
 plt.ylabel("예측 성별")
 plt.tight_layout()
-heatmap_path = os.path.join(RESULT_DIR, "heatmap_gender_pitch.png")
+heatmap_path = os.path.join(RESULT_DIR, "heatmap_gender_pitch_0,25.png")
 plt.savefig(heatmap_path)
 
 # === 📊 시각화 2: 박스플롯 ===
@@ -183,5 +183,5 @@ sns.boxplot(x="예측 성별", y="평균 피치 (Hz)", data=final_df)
 plt.title("예측 성별별 평균 피치 박스플롯")
 plt.ylabel("평균 피치 (Hz)")
 plt.tight_layout()
-boxplot_path = os.path.join(RESULT_DIR, "boxplot_pitch_by_gender.png")
+boxplot_path = os.path.join(RESULT_DIR, "boxplot_pitch_by_gender_0.25.png")
 plt.savefig(boxplot_path)
